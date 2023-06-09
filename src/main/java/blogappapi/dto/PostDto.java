@@ -7,9 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Getter
@@ -34,5 +32,5 @@ public class PostDto {
 
     private UserDto user;
 
-    private List<CommentDto> comments = new ArrayList<>();
+    private Set<CommentDto> comments=new HashSet<>();
 }

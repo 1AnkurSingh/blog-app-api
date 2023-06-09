@@ -3,6 +3,9 @@ package blogappapi.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 public class UserDto {
 
@@ -23,4 +26,6 @@ public class UserDto {
     @NotNull
     @NotEmpty
     private String about;
+
+
 }

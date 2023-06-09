@@ -5,6 +5,7 @@ import blogappapi.Service.FileServiceImpl;
 import blogappapi.Service.PostService;
 import blogappapi.config.AppConstants;
 import blogappapi.dto.ApiResponse;
+import blogappapi.dto.ImageResponse;
 import blogappapi.dto.PostDto;
 import blogappapi.dto.PostResponse;
 import blogappapi.model.Post;
@@ -108,16 +109,20 @@ public class PostController {
 
     // Post Image Upload
     @PostMapping("/post/image/upload/{postId}")
-    public ResponseEntity<PostDto>uploadPostImage(
-            @RequestParam("image")MultipartFile image,
+    public ResponseEntity<ImageResponse >uploadPostImage(
+            @RequestParam("PostImage")MultipartFile image,
             @PathVariable Integer postId) throws IOException {
         PostDto postDto = this.postService.getPostById(postId);
 
-        String fileName = this.fileService.uploadImage(path, image);
+        String imageName = this.fileService.uploadImage(path, image);
 
-        postDto.setImageName(fileName);
+        ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).build();
+
+
+        postDto.setImageName(imageName);
         PostDto updatedPost = this.postService.updatePost(postDto, postId);
-       return new ResponseEntity<PostDto>(updatedPost,HttpStatus.OK);
+
+       return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
     // Method to serve File

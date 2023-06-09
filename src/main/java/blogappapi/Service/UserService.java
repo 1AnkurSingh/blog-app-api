@@ -49,7 +49,9 @@ public class UserService {
 
     // get All user
     public List<User> getAllUSer(){
-        return userRepository.findAll();
+        List<User> listOfUser = userRepository.findAll();
+        System.out.println("_________======abc..    ====="+listOfUser);
+        return listOfUser;
     }
 
     public String deleteUser(int id){

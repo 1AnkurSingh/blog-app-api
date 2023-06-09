@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class CategoryController {
+public class  CategoryController {
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -35,13 +35,13 @@ public class CategoryController {
         categoryService.deleteCategory(id);
     }
 
-    @GetMapping("/getCategory/{id}")
+        @GetMapping("/getCategory/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable int id) {
         CategoryDto createCategory = categoryService.getCategory(id);
         return new ResponseEntity<CategoryDto>(createCategory, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllCategory")
+        @GetMapping("/getAllCategory")
     public ResponseEntity<List<CategoryDto>> getAllCategory() {
         List<CategoryDto> createCategorys = categoryService.getCategories();
         return ResponseEntity.ok(createCategorys);
