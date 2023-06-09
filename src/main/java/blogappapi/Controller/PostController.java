@@ -19,6 +19,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -116,7 +117,7 @@ public class PostController {
 
         String imageName = this.fileService.uploadImage(path, image);
 
-        ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).success(true).status(HttpStatus.CREATED).build();
+        ImageResponse imageResponse=ImageResponse.builder().imageName(imageName).message("image upload successfully").success(true).status(HttpStatus.CREATED).build();
 
 
         postDto.setImageName(imageName);
@@ -127,13 +128,15 @@ public class PostController {
 
     // Method to serve File
 //    @GetMapping(value = "/post/image/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
-//    public void downloadImage(@PathVariable("imageName")String imageName,
-//                              HttpServletResponse response)throws IOException{
-//
-//        InputStream resource=this.fileService.getResource(path,imageName);
-//        resource.
-//        StreamUtils.copy(resource,response.getOutputStream());
-//    }
+    @GetMapping("/images/{postId}")
+    public void serveImage(@PathVariable("postId")Integer postId,HttpServletResponse response) throws IOException {
+
+        PostDto post = postService.getPostById(postId);
+        InputStream resource = fileService.getResource(path, post.getImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource,response.getOutputStream());
+
+    }
 
 
 }

@@ -11,12 +11,18 @@ import blogappapi.model.Post;
 import blogappapi.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +40,9 @@ public class PostServiceImpl implements PostService{
 
     @Autowired
     CategoryRepository  categoryRepository;
+
+    @Value("${project.image}")
+    private String path;
 
 
     @Override
@@ -65,6 +74,23 @@ public class PostServiceImpl implements PostService{
     @Override
     public void deletePost(int id) {
         Post post=postRepository.findById(id).orElseThrow(() -> new ResourceNotFountException("Post","PostId",id));
+
+
+        //Delete Post image
+        String fullPath = path + post.getImageName();
+
+       try {
+           Path path1= Paths.get(fullPath);
+
+
+           Files.delete(path1);
+       }catch (NoSuchFileException ex){
+
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+
+
         postRepository.deleteById(post.getPostId());
     }
 //  Get All Post
