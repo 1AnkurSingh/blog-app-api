@@ -2,6 +2,7 @@ package blogappapi.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,17 +17,15 @@ public class UserDto {
     private String name;
     @Email(message = "Enter Valid email Address")
     @NotEmpty
-   // @Pattern(regexp = "@")
     private String email;
     private String imageName;
     @NotNull
-//    @NotEmpty
-//    @Size(min = 3,max = 10)
-   // @Pattern(regexp = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$\"",message = "must use *a1")
     private String password;
     @NotNull
     @NotEmpty
     private String about;
+
+    private MultipartFile imageFile;
 
 
 }

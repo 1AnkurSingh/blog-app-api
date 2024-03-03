@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +32,31 @@ public class UserService {
         u1.setAbout(userDto.getAbout());
         return userRepository.save(u1);
     }
+
+    // Add User With image
+    public UserDto createUser(UserDto userDto) {
+        User user = modelMapper.map(userDto, User.class);
+
+        // Upload image
+        if (userDto.getImageFile() != null) {
+            try {
+                user.setImage(userDto.getImageFile().getBytes());
+                user.setImageName(userDto.getImageFile().getOriginalFilename());
+            } catch (IOException e) {
+                // Handle exception
+            }
+        }
+
+        userRepository.save(user);
+        return modelMapper.map(user, UserDto.class);
+    }
+
+
+
+
+
+
+
 
 // update
     public User updateUser(UserDto userDto , Integer userId){

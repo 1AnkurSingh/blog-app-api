@@ -22,8 +22,12 @@ public class User {
     private String email;
     private String password;
     private String about;
-
     private String imageName;
+
+    // Store image in database
+    @Lob
+    private byte[] image;
+
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Post> posts= new ArrayList<>();

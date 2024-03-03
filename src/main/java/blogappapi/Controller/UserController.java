@@ -1,7 +1,9 @@
 package blogappapi.Controller;
 import blogappapi.Service.FileService;
 import blogappapi.Service.UserService;
+import blogappapi.dto.ApiResponse;
 import blogappapi.dto.ImageResponse;
+import blogappapi.dto.UserCreationResponse;
 import blogappapi.dto.UserDto;
 import blogappapi.model.User;
 import jakarta.validation.Valid;
@@ -88,5 +90,27 @@ public class UserController {
 
         return  new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
 
+    }
+
+    // Create user With user image in db
+    @PostMapping("/create")
+    public ResponseEntity<UserCreationResponse> createUser(@ModelAttribute UserDto userDto) {
+        UserDto createdUser = userService.createUser(userDto);
+
+
+        UserCreationResponse response = new UserCreationResponse();
+        response.setId(createdUser.getId());
+        response.setName(createdUser.getName());
+        response.setEmail(createdUser.getEmail());
+        response.setImageName(createdUser.getImageName());
+        response.setPassword(createdUser.getPassword());
+        response.setAbout(createdUser.getAbout());
+        if(createdUser.getImageName()!=null){
+            response.setStatus("Image uploaded successfully");
+            }
+        else {
+            response.setStatus("Image upload failed");
+        }
+        return ResponseEntity.ok(response);
     }
 }
