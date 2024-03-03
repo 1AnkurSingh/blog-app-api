@@ -1,10 +1,7 @@
 package blogappapi.Controller;
 import blogappapi.Service.FileService;
 import blogappapi.Service.UserService;
-import blogappapi.dto.ApiResponse;
-import blogappapi.dto.ImageResponse;
-import blogappapi.dto.UserCreationResponse;
-import blogappapi.dto.UserDto;
+import blogappapi.dto.*;
 import blogappapi.model.User;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -39,7 +36,7 @@ public class UserController {
 
     @PutMapping("/upadteByid/{id}")
     public User updateUser(@RequestBody UserDto userDto , @PathVariable("id") int id){
-        return userService.updateUser(userDto,id);
+        return userService.updateUser1(userDto,id);
     }
 
     @GetMapping("/getuserByid/{id}")
@@ -78,7 +75,7 @@ public class UserController {
         String imageName = fileService.uploadImage(imageUploadPath, image);
         UserDto user = userService.getUserById(userId);
         user.setImageName(imageName);
-        User userDto = userService.updateUser(user, userId);
+        User userDto = userService.updateUser1(user, userId);
 
         ImageResponse imageResponse = ImageResponse
                 .builder()
@@ -113,4 +110,42 @@ public class UserController {
         }
         return ResponseEntity.ok(response);
     }
+
+    // Upload image with user in db by Simple way
+    @PostMapping("/{userId}/addWithImage")
+    public ResponseEntity<UserCreationResponse> addUserWithImage(
+            @PathVariable("userId") int userId,
+            @RequestParam("userImage") MultipartFile image
+    ) throws IOException {
+        // Check if userId exists
+        UserDto userById = userService.getUserById(userId);
+
+
+        // Upload image
+        if (!image.isEmpty()) {
+            String imageName = image.getOriginalFilename();
+            byte[] imageData = image.getBytes();
+
+            // Update user entity
+            userService.updateUser(userId, imageName, imageData);
+
+            // Create response
+            UserCreationResponse response = new UserCreationResponse();
+            response.setId(userId);
+            response.setImageName(imageName);
+            response.setAbout(userById.getAbout());
+            response.setName(userById.getName());
+            response.setEmail(userById.getEmail());
+            response.setPassword(userById.getPassword());
+            response.setStatus("Image uploaded successfully");
+
+            return ResponseEntity.ok(response);
+        } else {
+            // Handle empty image upload
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+
 }

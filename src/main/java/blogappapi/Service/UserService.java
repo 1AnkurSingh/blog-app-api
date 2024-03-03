@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -59,13 +57,21 @@ public class UserService {
 
 
 // update
-    public User updateUser(UserDto userDto , Integer userId){
+    public User updateUser1(UserDto userDto , Integer userId){
         User user1= this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFountException("User","Id",userId));
         user1.setName(userDto.getName());
         user1.setEmail(userDto.getEmail());
         user1.setPassword(user1.getPassword());
         user1.setAbout(userDto.getAbout());
         user1.setImageName(userDto.getImageName());
+        return userRepository.save(user1);
+    }
+
+    public User updateUser(Integer userId, String imageName, byte[] imageData) {
+        User user1 = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFountException("User", "Id", userId));
+        user1.setImageName(imageName);
+        user1.setImage(imageData); // Set the image data
+
         return userRepository.save(user1);
     }
 
@@ -117,6 +123,8 @@ public class UserService {
         return ud;
     }
 
+
+
 //    public List<User> add1(List<UserDto> userDtos1,UserDto userDto){
 //        User m= new User();
 //        m.setName(userDto.getName());
@@ -133,4 +141,6 @@ public class UserService {
 //        return this.userRepository.saveAll(userDtos);
 //
 //    }
+
+
 }

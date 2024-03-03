@@ -1,5 +1,6 @@
 package blogappapi.dto;
 
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,12 @@ public class UserDto {
     @NotEmpty
     private String about;
 
+
     private MultipartFile imageFile;
+
+    @Lob
+    private byte[] image;
+
 
 
 }
