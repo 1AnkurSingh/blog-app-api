@@ -1,17 +1,34 @@
 package blogappapi.Controller;
+import blogappapi.Service.FileService;
 import blogappapi.Service.UserService;
+import blogappapi.dto.ImageResponse;
 import blogappapi.dto.UserDto;
 import blogappapi.model.User;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    FileService fileService;
+
+    Logger logger= LoggerFactory.getLogger(UserController.class);
+
+    @Value("${user.profile.image.path}")
+    private  String imageUploadPath;
 
     @PostMapping("/addSingleUser")
     public User addSingleUser(@Valid @RequestBody UserDto userDto){
@@ -24,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/getuserByid/{id}")
-    public User getUserById(@PathVariable int id){
+    public UserDto getUserById(@PathVariable int id){
         return userService.getUserById(id);
     }
 
@@ -52,4 +69,24 @@ public class UserController {
 //    public List<UserDto> add(@RequestBody UserDto userDto){
 //        return userService.addListOfUser(userDto);
 //    }
+
+    // Add Images
+    @PostMapping("/uploadImage/{userId}")
+    public ResponseEntity<ImageResponse>uploadUserImage(@PathVariable("userId") int userId,@RequestParam("userImage")MultipartFile image) throws IOException {
+        String imageName = fileService.uploadImage(imageUploadPath, image);
+        UserDto user = userService.getUserById(userId);
+        user.setImageName(imageName);
+        User userDto = userService.updateUser(user, userId);
+
+        ImageResponse imageResponse = ImageResponse
+                .builder()
+                .imageName(imageName)
+                .message("image uploaded successfully!!")
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .build();
+
+        return  new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+
+    }
 }

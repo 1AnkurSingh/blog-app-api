@@ -18,6 +18,7 @@ public class Post {
     @Column(name="post_title",length = 100,nullable = false)
     private  String title;
 
+
     @Column(nullable = false,length = 10000)
     private String content;
 

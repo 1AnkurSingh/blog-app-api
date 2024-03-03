@@ -18,6 +18,7 @@ public class UserDto {
     @NotEmpty
    // @Pattern(regexp = "@")
     private String email;
+    private String imageName;
     @NotNull
 //    @NotEmpty
 //    @Size(min = 3,max = 10)

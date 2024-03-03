@@ -39,12 +39,16 @@ public class UserService {
         user1.setEmail(userDto.getEmail());
         user1.setPassword(user1.getPassword());
         user1.setAbout(userDto.getAbout());
+        user1.setImageName(userDto.getImageName());
         return userRepository.save(user1);
     }
 
     // get user by id
-    public User getUserById(int id){
-        return userRepository.findById(id).get();
+    public UserDto getUserById(int id){
+
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Id is not found !!"));
+        return modelMapper.map(user,UserDto.class);
+
     }
 
     // get All user
